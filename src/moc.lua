@@ -19,8 +19,8 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  ]]
- 
-MoC = {}
+
+MoC = {__version = {major = 0, minor = 1, build = 0}}
 
 function createmock()
 	return setmetatable({invocations={}}, {__call = function(t, ...)

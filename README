@@ -27,5 +27,17 @@ And then verify that the methods were called
 verifyOnce():on(mock):Foo() -- will succeed
 verifyAtLeast(2):on(mock):Bar() -- will fail
 
+MoC currently doesn't support verification based on the parameters used.
+
 
 For example usage, have a look at the test cases supplied in the test folder. These tests run in any environment specifying the assert* functions, in the case of MoC development they were run on the Kahlua machine using the kahlua-test project.
+
+Version History:
+
+0.1
+	- Initial version
+	- Support for verification of calls (no parameter matching)
+
+TODO:
+* Add support for parameter matching
+* Add support for stubs
