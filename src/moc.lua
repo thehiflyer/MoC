@@ -1,5 +1,5 @@
  --[[
- Copyright (c) 2010 Per Malmén (per.malmen@gmail.com)
+ Copyright (c) 2011 Per Malmén (per.malmen@gmail.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
