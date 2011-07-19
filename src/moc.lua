@@ -20,7 +20,11 @@
  THE SOFTWARE.
  ]]
 
-MoC = {__version = {major = 0, minor = 1, build = 0}}
+ --[[
+  Find more information about MoC on https://github.com/thehiflyer/MoC
+  ]]
+
+MoC = {__version = setmetatable({major = 0, minor = 1, build = 1}, {__tostring = function(e) return string.format("%d.%d.%d", e.major, e.minor, e.build)end})}
 
 function createmock()
 	return setmetatable({invocations={}}, {__call = function(t, ...)

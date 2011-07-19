@@ -1,4 +1,4 @@
-require("moc")
+require("lua/core/moc")
 
 local __fail = fail
 
@@ -12,12 +12,12 @@ end
 
 
 function testCreate()
-	local mock = Mock:New()
+	local mock = MoC:New()
 	assertNotNil(mock)
 end
 
 function testVerifyOnce()
-	local mock = Mock:New()
+	local mock = MoC:New()
 
 	assertNil(lastFail)
 	verifyOnce():on(mock):Foo()
@@ -35,7 +35,7 @@ function testVerifyOnce()
 end
 
 function testVerifyExactly()
-	local mock = Mock:New()
+	local mock = MoC:New()
 
 	assertNil(lastFail)
 	verifyExactly(2):on(mock):Foo()
@@ -64,7 +64,7 @@ function testVerifyExactly()
 end
 
 function testAtLeast()
-	local mock = Mock:New()
+	local mock = MoC:New()
 
 	assertNil(lastFail)
 	verifyAtLeast(2):on(mock):Foo()
@@ -91,7 +91,7 @@ function testAtLeast()
 end
 
 function testAtMost()
-	local mock = Mock:New()
+	local mock = MoC:New()
 
 	assertNil(lastFail)
 	verifyAtMost(2):on(mock):Foo()
@@ -114,7 +114,7 @@ function testAtMost()
 end
 
 function testVerifyNever()
-	local mock = Mock:New()
+	local mock = MoC:New()
 
 	assertNil(lastFail)
 	verifyNever():on(mock):Foo()
