@@ -1,5 +1,5 @@
  --[[
- Copyright (c) 2011 Per Malmén (per.malmen@gmail.com)
+ Copyright (c) 2011 Per MalmÃ©n (per.malmen@gmail.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,23 @@
   Find more information about MoC on https://github.com/thehiflyer/MoC
   ]]
 
-MoC = {__version = setmetatable({major = 0, minor = 1, build = 1}, {__tostring = function(e) return string.format("%d.%d.%d", e.major, e.minor, e.build)end})}
+require("se/hiflyer/moc/callhandler")
 
-function createmock()
-	return setmetatable({invocations={}}, {__call = function(t, ...)
-		table.insert(t.invocations, {n=select("#", ...), ...})
-	end})
-end
+MoC = {__version = setmetatable({major = 0, minor = 2, build = 0}, {__tostring = function(e) return string.format("%d.%d.%d", e.major, e.minor, e.build)end})}
+
+__latestInvocation = nil
 
 function MoC:New()
 	local this = {}
-	setmetatable(this, {__index = function(t, k) local x=createmock()
-              rawset(t, k, x) return x end })
+	setmetatable(this,
+		{__index = function(t, k)
+			local callHandler = rawget(t,k)
+			if not callHandler then
+				callHandler = CallHandler:New(1)
+				rawset(t, k, callHandler)
+			end
+			return callHandler
+		end })
 	return this
 end
 
@@ -51,16 +56,21 @@ end
 
 function verifyWithComparator(comparator)
 	return {on = function(self, mock)
-		return setmetatable({}, {__index = function(t, mockFunction)
-			return function(func, ...)
-				local invocationsTable = mock[mockFunction].invocations
-				local actualInvocations = #invocationsTable
-				local success, compareResult = comparator(actualInvocations)
-				if(not success) then
-					fail(compareResult)
+		local onHandler = {}
+		local meta = {
+			__index = function(t, mockFunction)
+				return function(...)
+					local args = {n = select("#", ...), ...}
+					local callHandler = mock[mockFunction]
+					local actualInvocations = callHandler:GetNumberOfInvocationsMatchingParams(unpack(args))
+					local success, compareResult = comparator(actualInvocations)
+					if (not success) then
+						error(compareResult)
+					end
 				end
 			end
-		end})
+		}
+		return setmetatable(onHandler, meta)
 	end}
 end
 
@@ -97,4 +107,15 @@ end
 
 function verifyOnce()
 	return verifyExactly(1)
+end
+
+function when(mockInvocation)
+	local callHandler = __latestInvocation
+	local lastCall = callHandler:RemoveLastestInvocation()
+	return {
+	 thenReturn = function(self, ...)
+		 local returnArgs = {n = select("#", ...), ... }
+		 callHandler:AddStub(lastCall, returnArgs)
+	 end
+ }
 end

@@ -8,8 +8,7 @@ The name MoC indicates that it's a mocking framework but it is really an initial
 
 How do I use MoC?
 
-Download the file moc.lua and add it to a path your lua require can reach.
-Then you have to define a function fail(message). This is the function that will get called with an error message when a verification fails.
+Download the file moc.lua and callhandler.lua and add it to a path your lua require can reach. Since moc references callhandler you need keep them both in the directory se/hiflyer/moc
 That's it, MoC is now ready to use.
 
 
@@ -21,23 +20,38 @@ You can now use the object and all methods on it will record usage
 
 mock:Foo()
 mock:Bar("Yadda, yadda")
+mock:Bar("Yadda, yadda")
 
 And then verify that the methods were called
 
+verifyNever():on(mock):Foo() -- will fail
 verifyOnce():on(mock):Foo() -- will succeed
 verifyAtLeast(2):on(mock):Bar() -- will fail
+verifyAtLeast(2):on(mock):Bar("Yadda, yadda") -- will succeed
 
-MoC currently doesn't support verification based on the parameters used.
+
+Stubbing
+
+To have a method call return values
 
 
-For example usage, have a look at the test cases supplied in the test folder. These tests run in any environment specifying the assert* functions, in the case of MoC development they were run on the Kahlua machine using the kahlua-test project.
+when(mock:GetSize()):thenReturn(3, 4)
+
+local w, h = mock:GetSize()
+assertEquals(3, w)
+assertEquals(4, h)
+
+verifyOnce():on(mock):GetSize()
+
+
+For more example usage, have a look at the test cases supplied in the test folder. These tests run in any environment specifying the assert* functions, in the case of MoC development they were run on the Kahlua machine using the kahlua-test project.
 
 Version History:
+
+0.2
+	- Support for stubbing
+	- Support for parameter matching verification on verification and stubbing
 
 0.1
 	- Initial version
 	- Support for verification of calls (no parameter matching)
-
-TODO:
-* Add support for parameter matching
-* Add support for stubs
